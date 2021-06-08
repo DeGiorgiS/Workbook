@@ -12,11 +12,10 @@ Utilizzare per le parti di codice speficiche di una figura, 3 classi, implemenda
 Per l'input utilizzare la classe scanner, per discriminare tra le classi da chiamare usate un'istruzione Switch.
  */
 
+import java.util.Scanner;
 import ires.corso.partone.geometic.Quadrato;
 import ires.corso.partone.geometic.Trapezio;
 import ires.corso.partone.geometic.Triangolo;
-
-import java.util.Scanner;
 
 public class ShapeTest {
 
