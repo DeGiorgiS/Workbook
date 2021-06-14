@@ -33,6 +33,37 @@ public class Trapezio extends MasterShape{
         double lOne = -1;
         double lTwo = -1;
 
+        switch(tipo){
+            case "rettangolo":
+                bOne = bmaj;
+                bTwo = bmin;
+                lOne = h;
+                lTwo = Math.sqrt(h^2 + (bmaj-bmin)^2);
+                this.shape = "trapezio rettangolo";
+                break;
+            case "isoscele":
+                bOne = bmaj;
+                bTwo = bmin;
+                lOne = Math.sqrt(h^2 + ((bmaj - bmin)/2)^2);
+                lTwo = lOne;
+                this.shape = "trapezio isoscele";
+                break;
+            case "scaleno":
+                System.out.println("Ho bisogno delle informazioni sui lati obliqui, inserisci rispettivamente il primo " +
+                        "e poi il secondo");
+                bOne = bmaj;
+                bTwo = bmin;
+                System.out.println("lato uno: ");
+                lOne = in.nextInt();
+                System.out.println("lato due: ");
+                lTwo = in.nextInt();
+                this.shape = "trapezio scaleno";
+                break;
+            default:
+                System.out.println("Tipo di trapezio non riconosciuto. ERRORE");
+        }
+
+        /* CON CICLO FOR, POI TRASFORMATO IN SWITCH
         if(tipo == "rettangolo"){
             bOne = bmaj;
             bTwo = bmin;
@@ -61,6 +92,7 @@ public class Trapezio extends MasterShape{
         else{
             System.out.println("Tipo di trapezio non riconosciuto. ERRORE");
         }
+         */
 
         return bOne + bTwo + lOne + lTwo;
     }

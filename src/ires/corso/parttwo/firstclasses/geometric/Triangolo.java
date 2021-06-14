@@ -30,28 +30,28 @@ public class Triangolo extends MasterShape{
         double lOne = -1;
         double lTwo = -1;
 
-        if(tipo == "equilatero")
+        if(tipo.equals("equilatero"))
         {
             base = b;
             lOne = b;
             lTwo = b;
             this.shape = "triangolo equilatero";
         }
-        else if(tipo == "rettangolo")
+        else if(tipo.equals("rettangolo"))
         {
             base = b;
             lOne = h;
             lTwo = Math.sqrt(h^2 + b^2);
             this.shape = "triangolo rettangolo";
         }
-        else if(tipo == "isoscele")
+        else if(tipo.equals("isoscele"))
         {
             base = b;
             lOne = Math.sqrt(h^2 + (b/2)^2);
             lTwo = lOne;
             this.shape = "triangolo isoscele";
         }
-        else if(tipo == "scaleno")
+        else if(tipo.equals("scaleno"))
         {
             System.out.println("Ho bisogno delle informazioni sui lati obliqui, inserisci rispettivamente il primo " +
                     "e poi il secondo");
