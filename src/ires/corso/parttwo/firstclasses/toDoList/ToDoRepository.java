@@ -1,6 +1,6 @@
 package ires.corso.parttwo.firstclasses.toDoList;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 public class ToDoRepository implements Serializable {
@@ -16,8 +16,17 @@ public class ToDoRepository implements Serializable {
 
     // Serializzabile con la funzione writeObject()
     public static ToDoRepository loadFromFile(String fileName) {
-        // Individua il file e lo deserializza con readObject
-        // _repository = ...
+        try (FileInputStream file = new FileInputStream(fileName);
+             ObjectInputStream in = new ObjectInputStream(file)){
+            _repository = (ToDoRepository) in.readObject();
+            System.out.println("Il repository di ToDo è stato deserializzato");
+        }
+        catch(IOException e){
+            System.out.println("Trovata una IOException");
+        }
+        catch(ClassNotFoundException e){
+            System.out.println("Trovata una ClassNotFoundException");
+        }
         return _repository;
     }
 
@@ -30,15 +39,34 @@ public class ToDoRepository implements Serializable {
     Map<Long, ToDo> _data = new HashMap<>();
 
     public void delete(Long ID) {
-        //todo print "stai eliminando l'oggetto -descrizione-, sei sicuro?", se SI...
-        _data.remove(ID);
+        System.out.printf("Stai eliminando il seguente TO-DO \n%s", _data.get(ID).prettyPrint());
+        System.out.println("Sei sicuro? Digita il carattere S per confermare");
+        Scanner in = new Scanner(System.in);
+        String answer = in.nextLine();
+        if(answer.equals("S")){
+            _data.remove(ID);
+            System.out.println("Il TO-DO è stato eliminato");
+        }
+        else{
+            System.out.println("Il TO-DO non è stato eliminato");
+        }
+
     };
 
     public void add(ToDo t) {
         // si deve entrare nell'oggetto t e leggere il suo ID
         // per poi salvarlo nella mappa correttamente (con put(ID, t))
-        //todo print "stai aggiungendo l'oggetto -descrizione-, sei sicuro?", se SI...
-        _data.put(t.getEntityID(), t);
+        System.out.printf("Stai aggiungendo il seguente TO-DO \n%s", t.prettyPrint());
+        System.out.println("Sei sicuro? Digita il carattere S per confermare");
+        Scanner in = new Scanner(System.in);
+        String answer = in.nextLine();
+        if(answer.equals("S")){
+            _data.put(t.getEntityID(), t);
+            System.out.println("Il TO-DO è stato aggiunto");
+        }
+        else{
+            System.out.println("Il TO-DO non è stato aggiunto");
+        }
     }
 
     public void update(ToDo t) {
@@ -46,20 +74,40 @@ public class ToDoRepository implements Serializable {
         // si recupera dalla mappa il TO-DO corrispondente con get(t), per controllo
         // si sostituisce con put(ID, t)
         Long id = t.getEntityID();
-        _data.get(id);
-        //todo print "sei sicuro di voler eliminare l'oggetto... con descrizione dell'oggetto?", se SI...
-        _data.remove(id);
-        _data.put(id, t);
+        ToDo oldToDo = _data.get(id);
+        System.out.printf("Stai sostituendo il seguente TO-DO \n%s", oldToDo.prettyPrint());
+        System.out.printf("con il seguente TO-DO \n%s", t.prettyPrint());
+        System.out.println("Sei sicuro? Digita il carattere S per confermare");
+        Scanner in = new Scanner(System.in);
+        String answer = in.nextLine();
+        if(answer.equals("S")){
+            _data.remove(id);
+            _data.put(id, t);
+            System.out.println("Il TO-DO è stato aggiornato");
+        }
+        else{
+            System.out.println("Il TO-DO non è stato aggiornato");
+        }
+
     }
 
-    //todo controllo se il ciclo While funziona come dovrebbe
-    public List<ToDo> getToDoList() {
-        List<ToDo> toDoAsList= new ArrayList<>();
+    public boolean existence(ToDo t){
+        boolean itExists = false;
+        for (ToDo v:
+                _data.values()) {
+            if(v.equals(t)){itExists = true;}
+        }
+        return itExists;
+    }
+
+    public ArrayList<ToDo> getToDoList() {
+        ArrayList<ToDo> toDoAsList= new ArrayList<>();
 
         //con metodo compatto
         _data.values().addAll(toDoAsList);
 
         //con iterazione
+        //todo controllo se il ciclo While funziona come dovrebbe
         /*
         Iterator<ToDo> iToDo = _data.values().iterator();
         while(iToDo.hasNext()){
@@ -70,6 +118,14 @@ public class ToDoRepository implements Serializable {
     }
 
     public void writeToFile(String fileName) {
-
+        //con try-with-resources
+        try (FileOutputStream file = new FileOutputStream(fileName);
+             ObjectOutputStream out = new ObjectOutputStream(file)){
+            out.writeObject(this);
+            System.out.println("Il repository dei ToDo è stato serializzato");
+        }
+        catch(IOException e){
+            System.out.println("Trovata una IOException");
+        }
     }
 }

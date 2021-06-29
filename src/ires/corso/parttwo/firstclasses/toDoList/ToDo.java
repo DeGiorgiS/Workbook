@@ -5,12 +5,11 @@ import java.time.LocalDate;
 
 public class ToDo implements Serializable {
 
-
-    private enum Priorities {URGENTE, NORMALE, POCO_IMPORTANTE}; //todo controllare i livelli di priorità
+    private enum Priorities {ALTA, MEDIA, BASSA};
 
     private enum States {DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA};
     // classe principale
-    private static Long countID;
+    private static Long countID; // todo IL CONTATORE STATIC NON VIENE SERIALIZZATO, DA CAPIRE COME GIRARCI ATTORNO (es. variabile non static in ToDoRepository)
     private final Long entityID;
     private String title;
     private String description;
@@ -28,7 +27,7 @@ public class ToDo implements Serializable {
         description = null;
         dateOfCreation = LocalDate.now();
         dateOfExpiration = null;
-        priority = Priorities.URGENTE;
+        priority = Priorities.ALTA;
         state = States.DA_FARE;
     }
 
@@ -90,8 +89,21 @@ public class ToDo implements Serializable {
         return state;
     }
 
-    // fabbrica una copia esatta del To-Do (compreso l'ID)
-    // pensavo di creare un costruttore "volante" qui dentro che mi permettesse di riassegnare l'ID
+    public void setDateOfExpiration(LocalDate dateOfExpiration) {
+        this.dateOfExpiration = dateOfExpiration;
+    }
+
+    public void setPriority(Integer i) {
+        //todo faccio un if che collega numeri a valori del enum
+        this.priority = priority;
+    }
+
+    public void setState(States state) {
+        this.state = state;
+    }
+
+    /* fabbrica una copia esatta del To-Do (compreso l'ID)
+            pensavo di creare un costruttore "volante" qui dentro che mi permettesse di riassegnare l'ID*/
     public ToDo cloneForUpdate() {
 
         /*@Override
@@ -106,7 +118,14 @@ public class ToDo implements Serializable {
         }
          */
         Long id = getEntityID();
-        ToDo copiedToDo = new ToDo(id);
+        ToDo copiedToDo = new ToDo(id); //uso un costruttore PRIVATO per ID che crea una copia, ID compreso. todo da rivedere, poco elegante
         return copiedToDo;
+    }
+
+    public String prettyPrint(){
+        String s = String.format(" ID: %d \n TITOLO: %s \n DESCRIZIONE: %s \n CREATO IL: %s \n CON SCADENZA IL: %s \n CON PRIORITà: %s \n CON STATO: %s",
+                getEntityID(), getTitle(), getDescription(), getDateOfCreation().toString(), getDateOfExpiration().toString(), getPriority().toString(),
+                getState().toString());
+        return s;
     }
 }
