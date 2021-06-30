@@ -38,21 +38,9 @@ public class ToDoRepository implements Serializable {
 
     Map<Long, ToDo> _data = new HashMap<>();
 
-    //todo i controlli e le domande vengono spostati in ToDoManager
     public void delete(Long ID) {
-        System.out.printf("Stai eliminando il seguente TO-DO \n%s", _data.get(ID).prettyPrint());
-        System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
-        Scanner in = new Scanner(System.in);
-        String answer = in.nextLine();
-        if(answer.equals("S")){
-            _data.remove(ID);
-            System.out.println("Il TO-DO è stato eliminato");
-        }
-        else{
-            System.out.println("Il TO-DO non è stato eliminato");
-        }
-
-    };
+        _data.remove(ID);
+    }
 
 
     public void add(ToDo t) {

@@ -8,11 +8,12 @@ public class ToDoManager {
     // - metodi per creazione nuovo TO-DO
     // - metodi per la modifica, la rimozione
     // - gestisce input utente (cioè loop di richiesta di quali campi devono essere modificati)
-    // - ha al suo interno funzioni di controllo sull'input utente
+    // - ha al suo interno funzioni di controllo sull'input utente //todo i controlli forse?
 
     private static Scanner in = new Scanner (System.in);
 
     public static void createNewToDo() {
+        //invoco i singoli metodi che ho fatto per impostare le singole properties
         String name = choseTitle();
         String description = choseDescription();
         LocalDate expiration = choseDateOfExpiration();
@@ -20,8 +21,14 @@ public class ToDoManager {
         ToDo.States st = choseState();
         ToDo t = new ToDo(name, description, expiration, pr, st);
 
+        //ultima conferma finale
         System.out.printf("Stai aggiungendo il seguente TO-DO \n%s", t.prettyPrint());
-        confirmAdd(t);
+        if(confirm()){
+            ToDoRepository repo = ToDoRepository.getToDoRepository();
+            repo.add(t);
+            System.out.println("OPERAZIONE ESEGUITA!");
+        }
+        else System.out.println("OPERAZIONE ANNULLATA");
     }
 
     /* Chiede quale Id si vuole modificare
@@ -33,9 +40,14 @@ public class ToDoManager {
         Long id = (Long) in.nextLong();
 
         ToDoRepository repo = ToDoRepository.getToDoRepository();
-        //stampa del TO-DO scelto
+        //stampa del TO-DO scelto se esiste, altrimenti di un messaggio di errore
+        if(!repo._data.containsKey(id)){
+            System.out.println("ERRORE: ID non presente");
+            return;
+        }
+
         ToDo oldToDo = repo._data.get(id);
-        System.out.println(oldToDo.prettyPrint()); //todo gestione caso in cui l'ID non esiste
+        System.out.println(oldToDo.prettyPrint());
 
         //loop di richiesta di quali dati cambiare
         ToDo t = oldToDo.cloneForUpdate();
@@ -43,46 +55,64 @@ public class ToDoManager {
         String input = "";
 
 
-        //todo vedere questo ciclo usando i metodi per choseX() per le varie voci
+
         System.out.println("Vuoi cambiare il titolo?");
         if(confirm()){
-            System.out.println("Inserisci il nuovo titolo");
-            input = in.nextLine();
+            input = choseTitle();
             t.setTitle(input);
         }
         System.out.println("Vuoi cambiare la descrizione?");
         if(confirm()){
-            System.out.println("Inserisci la nuova descrizione");
-            input = in.nextLine();
+            input = choseDescription();
             t.setDescription(input);
         }
         System.out.println("Vuoi cambiare la data di scadenza?");
         if(confirm()){
-            System.out.println("Inserisci il nuovo anno in cifre");
-            int anno = in.nextInt();
-            System.out.println("Inserisci il nuovo mese in cifre");
-            int mese = in.nextInt();
-            System.out.println("Inserisci il nuovo giorno in cifre");
-            int giorno = in.nextInt();
-            t.setDateOfExpiration(LocalDate.of(anno, mese, giorno));
+            LocalDate inputDate = choseDateOfExpiration();
+            t.setDateOfExpiration(inputDate);
         }
         System.out.println("Vuoi cambiare la priorità?");
         if(confirm()){
-            System.out.println("Inserisci");
+            t.setPriority(chosePriority());
         }
         System.out.println("Vuoi cambiare lo stato?");
+        if(confirm()){
+            t.setState(choseState());
+        }
 
-
-
-
-
+        //chiedo ultima conferma prima di cambiare
         System.out.printf("Stai sostituendo il seguente TO-DO \n%s", oldToDo.prettyPrint());
         System.out.printf("con il seguente TO-DO \n%s", t.prettyPrint());
-        System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
-
-        confirmUpdate(t);
+        if(confirm()){
+            repo.update(t);
+            System.out.println("OPERAZIONE ESEGUITA!");
+        }
+        else System.out.println("OPERAZIONE ANNULLATA");
     }
 
+    public static void removeToDo() {
+        System.out.println("Qual'e' l'ID del TO-DO da eliminare?");
+        Long id = (Long) in.nextLong();
+
+        ToDoRepository repo = ToDoRepository.getToDoRepository();
+        //stampa del TO-DO scelto se esiste, altrimenti di un messaggio di errore
+        if(!repo._data.containsKey(id)){
+            System.out.println("ERRORE: ID non presente");
+            return;
+        }
+
+        ToDo oldToDo = repo._data.get(id);
+
+        System.out.printf("Stai eliminando il seguente TO-DO \n%s", oldToDo.prettyPrint());
+        if(confirm()){
+            repo.delete(id);
+            System.out.println("OPERAZIONE ESEGUITA!");
+        }
+        else System.out.println("OPERAZIONE ANNULLATA");
+    }
+
+    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente ho formato non applicabile?
+    //todo vale anche per tutti i metodi .choseX() più sotto
     public static String choseTitle(){
         System.out.println("Scegli un titolo per il To-Do");
         String name = in.nextLine();
@@ -95,12 +125,13 @@ public class ToDoManager {
         return description;
     }
 
+    //todo qui quasi sicuramente dovrei controllare
     public static LocalDate choseDateOfExpiration(){
-        System.out.println("Scegli un anno di scadenza per il To-Do");
+        System.out.println("Scegli un anno di scadenza  IN CIFRE per il To-Do");
         int year = Integer.parseInt(in.nextLine());
-        System.out.println("Scegli un mese di scadenza per il To-Do");
+        System.out.println("Scegli un mese di scadenza IN CIFRE per il To-Do");
         int month = Integer.parseInt(in.nextLine());
-        System.out.println("Scegli un giorno di scadenza per il To-Do");
+        System.out.println("Scegli un giorno di scadenza IN CIFRE per il To-Do");
         int day = Integer.parseInt(in.nextLine());
         LocalDate expiration = LocalDate.of(year, month, day);
         return expiration;
@@ -145,44 +176,11 @@ public class ToDoManager {
         return st;
     }
 
-    //todo tra i due metodi di conferma cambia solo l'operazione sul repo. Trasformo in booleano e metto l'operazione
-    //todo in metodo che fa il resto?
-    private static void confirmAdd(ToDo t){
-        System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
-        String answer = in.nextLine();
-        if(answer.equalsIgnoreCase("S")){
-            ToDoRepository repo = ToDoRepository.getToDoRepository();
-            repo.add(t);
-            System.out.println("OPERAZIONE ESEGUITA!");
-        }
-        else{
-            System.out.println("OPERAZIONE ANNULLATA");
-        }
-    }
-
-    private static void confirmUpdate(ToDo t){
-        System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
-        String answer = in.nextLine();
-        if(answer.equalsIgnoreCase("S")){
-            ToDoRepository repo = ToDoRepository.getToDoRepository();
-            repo.update(t);
-            System.out.println("OPERAZIONE ESEGUITA!");
-        }
-        else{
-            System.out.println("OPERAZIONE ANNULLATA");
-        }
-    }
-
     private static boolean confirm(){
         boolean confirmation = false;
         System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
         String answer = in.nextLine();
-        if(answer.equalsIgnoreCase("S")){
-            confirmation = true;
-        }
-        else{
-            confirmation = false;
-        }
+        confirmation = answer.equalsIgnoreCase("S");
         return confirmation;
     }
 }

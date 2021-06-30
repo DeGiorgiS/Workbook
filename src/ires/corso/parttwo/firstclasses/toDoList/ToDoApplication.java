@@ -29,7 +29,7 @@ public class ToDoApplication {
             printer("2. AGGIUNGI, RIMUOVI, MODIFICA");
             printer("3. IMPORT/EXPORT");
             printer("4. USCITA");
-            askForInput();
+            askForInputNum();
 
             //scelta dell'azione
             switch(in.nextLine()){
@@ -37,7 +37,7 @@ public class ToDoApplication {
                     printer("1. VISUALIZZA E ORDINA PER PRIORITà");
                     printer("2. VISUALIZZA E ORDINA PER STATO");
                     printer("3. VISUALIZZA E ORDINA PER DATA");
-                    askForInput();
+                    askForInputNum();
                     switch(in.nextLine()){
                         case "1":
                             tdl.viewByPriority();
@@ -56,18 +56,34 @@ public class ToDoApplication {
                     printer("1. AGGIUNGI");
                     printer("2. RIMUOVI");
                     printer("3. MODIFICA");
-                    askForInput();
-                    switch(in.nextLine()){
+                    askForInputNum();
+                    switch(in.nextLine()){ //todo forse dovrei spostare qui la parte testuale del ToDoManager???
                         case "1":
-                            ToDo t = new ToDo();
-                            //metodo di creazione testuale di un todo
-                            repo.add(t);
-                        case "2": //todo chiama metodo per ordinare per stato
-                        case "3": //todo chiama metodo per ordinare per data
+                            //metodo di creazione testuale di un TO-DO
+                            ToDoManager.createNewToDo();
+                        case "2":
+                            //metodo di rimozione testuale di un TO-DO
+                            ToDoManager.removeToDo();
+                        case "3":
+                            //metodo di modifica testuale di un TO-DO
+                            ToDoManager.updateToDo();
                         default:
                             inputNotValid();
                     }
 
+                case "3": //todo da fare la classe apposita
+
+                case"4":
+                    printer("SEI SICURO DI VOLER USCIRE? Digita il carattere \"S\" per confermare o un altro tasto per annullare");
+                    String answer = in.nextLine();
+                    if(answer.equalsIgnoreCase("S")){
+                        repo.writeToFile("nome del file"); //todo da sistemare il nome del file in output
+                        quit = true;
+                    }
+
+
+                default:
+                    inputNotValid();
             }
         }
     }
@@ -80,7 +96,7 @@ public class ToDoApplication {
         System.out.println(s);
     }
 
-    public static void askForInput(){
+    public static void askForInputNum(){
         printer("Seleziona cosa fare digitando il numero corrispondente");
         System.out.print("==>");
     }
