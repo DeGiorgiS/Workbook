@@ -1,9 +1,6 @@
 package ires.corso.parttwo.firstclasses.toDoList;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class ToDoList {
     // Implementa le funzionalità di visualizzazione con:
@@ -13,23 +10,75 @@ public class ToDoList {
     // Si appoggia a un metodo di ToDoRepository per avere una lista (= copia dei TO-DO
     // originali) dei TO-DO attualmente a sistema, cioè un ArrayList facilmente utilizzabile
 
+    private ArrayList<ToDo> theList = null;
+
+    //funzione per creare una DeepCopy. Alla fine non la sto usando
+    public ArrayList<ToDo> deepCopy(ArrayList<ToDo> altd){
+        ArrayList<ToDo> copy = new ArrayList<>();
+        Iterator<ToDo> itr = altd.iterator();
+
+        while(itr.hasNext()){
+            copy.add((ToDo) itr.next().cloneForUpdate());
+        }
+
+        return copy;
+    }
 
     // Questa funzione è chiamata quando l'utente sceglie di visualizzare i dati per priorità...
     public void viewByPriority() {
         ToDoRepository tdr = ToDoRepository.getToDoRepository();
-        ArrayList<ToDo> tdl = tdr.getToDoList();
+        theList = tdr.getToDoList();
 
-        List<ToDo> priorityOrdered = new ArrayList<>();
-        //ancora da ordinare la List
+        Comparator<ToDo> comparator = new Comparator<ToDo>() {
+            @Override
+            public int compare(ToDo o1, ToDo o2) {
+                return o1.comparePriority(o2);
+            }
+        };
+        Collections.sort(theList,comparator);
+    }
+
+    // lista ordinata per stato
+    public ArrayList<ToDo> viewByState() {
+        ToDoRepository tdr = ToDoRepository.getToDoRepository();
+        ArrayList<ToDo> stateOrdered = tdr.getToDoList();
+
+        Comparator<ToDo> comparator = new Comparator<ToDo>() {
+            @Override
+            public int compare(ToDo o1, ToDo o2) {
+                return o1.compareState(o2);
+            }
+        };
+        Collections.sort(stateOrdered,comparator);
+
+        return stateOrdered;
     }
 
     //funzione per ordinare per data di scadenza
-    public void viewByExpiration() {
+    public ArrayList<ToDo> viewByExpiration() {
         ToDoRepository tdr = ToDoRepository.getToDoRepository();
-        List<ToDo> tdl = tdr.getToDoList();
+        ArrayList<ToDo> expirationOrdered = tdr.getToDoList();
 
-        List<ToDo> expirationOrdered = new ArrayList<>();
-        //ancora da ordinare
+        Comparator<ToDo> comparator = new Comparator<ToDo>() {
+            @Override
+            public int compare(ToDo o1, ToDo o2) {
+                int result = o1.getDateOfExpiration().compareTo(o2.getDateOfExpiration());
+                return result;
+            }
+        };
+        Collections.sort(expirationOrdered,comparator);
 
+        return expirationOrdered;
+    }
+
+    public String print(){
+        String result = "";
+
+        for (ToDo t:
+             theList) {
+            result = result + t.prettyPrint();
+        }
+
+        return result;
     }
 }

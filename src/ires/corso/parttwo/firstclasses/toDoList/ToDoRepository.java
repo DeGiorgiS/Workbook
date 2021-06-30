@@ -38,9 +38,10 @@ public class ToDoRepository implements Serializable {
 
     Map<Long, ToDo> _data = new HashMap<>();
 
+    //todo i controlli e le domande vengono spostati in ToDoManager
     public void delete(Long ID) {
         System.out.printf("Stai eliminando il seguente TO-DO \n%s", _data.get(ID).prettyPrint());
-        System.out.println("Sei sicuro? Digita il carattere S per confermare");
+        System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
         Scanner in = new Scanner(System.in);
         String answer = in.nextLine();
         if(answer.equals("S")){
@@ -53,42 +54,34 @@ public class ToDoRepository implements Serializable {
 
     };
 
+
     public void add(ToDo t) {
         // si deve entrare nell'oggetto t e leggere il suo ID
         // per poi salvarlo nella mappa correttamente (con put(ID, t))
-        System.out.printf("Stai aggiungendo il seguente TO-DO \n%s", t.prettyPrint());
-        System.out.println("Sei sicuro? Digita il carattere S per confermare");
-        Scanner in = new Scanner(System.in);
-        String answer = in.nextLine();
-        if(answer.equals("S")){
-            _data.put(t.getEntityID(), t);
-            System.out.println("Il TO-DO è stato aggiunto");
-        }
-        else{
-            System.out.println("Il TO-DO non è stato aggiunto");
-        }
+        _data.put(t.getEntityID(), t);
     }
 
     public void update(ToDo t) {
         // si prende l'ID dall'oggetto t
         // si recupera dalla mappa il TO-DO corrispondente con get(t), per controllo
         // si sostituisce con put(ID, t)
+
+        //prendo ID del To-Do inserito
         Long id = t.getEntityID();
-        ToDo oldToDo = _data.get(id);
-        System.out.printf("Stai sostituendo il seguente TO-DO \n%s", oldToDo.prettyPrint());
-        System.out.printf("con il seguente TO-DO \n%s", t.prettyPrint());
-        System.out.println("Sei sicuro? Digita il carattere S per confermare");
-        Scanner in = new Scanner(System.in);
-        String answer = in.nextLine();
-        if(answer.equals("S")){
-            _data.remove(id);
-            _data.put(id, t);
-            System.out.println("Il TO-DO è stato aggiornato");
-        }
-        else{
-            System.out.println("Il TO-DO non è stato aggiornato");
+
+        //controllo esista già un to-do con quel ID
+        boolean alreadyTakenID = false;
+        for (Long ids:
+             _data.keySet()) {
+            if(id.equals(ids)){
+                alreadyTakenID = true;
+                break;
+            }
         }
 
+        //eseguo l'update
+        if(alreadyTakenID) _data.remove(id);
+        _data.put(id, t);
     }
 
     public boolean existence(ToDo t){

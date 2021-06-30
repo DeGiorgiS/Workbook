@@ -5,15 +5,15 @@ import java.time.LocalDate;
 
 public class ToDo implements Serializable {
 
-    private enum Priorities {ALTA, MEDIA, BASSA};
+    protected enum Priorities {ALTA, MEDIA, BASSA};
+    protected enum States {DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA};
 
-    private enum States {DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA};
     // classe principale
     private static Long countID; // todo IL CONTATORE STATIC NON VIENE SERIALIZZATO, DA CAPIRE COME GIRARCI ATTORNO (es. variabile non static in ToDoRepository)
-    private final Long entityID;
+    private final Long ENTITY_ID;
     private String title;
     private String description;
-    private final LocalDate dateOfCreation;
+    private final LocalDate DATE_OF_CREATION;
     private LocalDate dateOfExpiration;
     private Priorities priority;
     private States state;
@@ -22,30 +22,30 @@ public class ToDo implements Serializable {
 
     // ...costruttore con ID incrementale...
     public ToDo(){
-        entityID = setID();
+        ENTITY_ID = setID();
         title = null;
         description = null;
-        dateOfCreation = LocalDate.now();
+        DATE_OF_CREATION = LocalDate.now();
         dateOfExpiration = null;
         priority = Priorities.ALTA;
         state = States.DA_FARE;
     }
 
     public ToDo(String t, String d, LocalDate date, Priorities p, States s){
-        entityID = setID();
+        ENTITY_ID = setID();
         title = t;
         description = d;
-        dateOfCreation = LocalDate.now();
+        DATE_OF_CREATION = LocalDate.now();
         dateOfExpiration = date;
         priority = p;
         state = s;
     }
 
     private ToDo(Long id){
-        entityID = id;
+        ENTITY_ID = id;
         title = getTitle();
         description = getDescription();
-        dateOfCreation = getDateOfCreation();
+        DATE_OF_CREATION = getDateOfCreation();
         dateOfExpiration = getDateOfExpiration();
         priority = getPriority();
         state = getState();
@@ -62,7 +62,7 @@ public class ToDo implements Serializable {
     }
 
     public Long getEntityID() {
-        return entityID;
+        return ENTITY_ID;
     }
 
     public String getTitle() {
@@ -74,7 +74,7 @@ public class ToDo implements Serializable {
     }
 
     public LocalDate getDateOfCreation() {
-        return dateOfCreation;
+        return DATE_OF_CREATION;
     }
 
     public LocalDate getDateOfExpiration() {
@@ -89,13 +89,20 @@ public class ToDo implements Serializable {
         return state;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setDateOfExpiration(LocalDate dateOfExpiration) {
         this.dateOfExpiration = dateOfExpiration;
     }
 
-    public void setPriority(Integer i) {
-        //todo faccio un if che collega numeri a valori del enum
-        this.priority = priority;
+    public void setPriority(Priorities p) {
+        this.priority = p;
     }
 
     public void setState(States state) {
@@ -127,5 +134,13 @@ public class ToDo implements Serializable {
                 getEntityID(), getTitle(), getDescription(), getDateOfCreation().toString(), getDateOfExpiration().toString(), getPriority().toString(),
                 getState().toString());
         return s;
+    }
+
+    public int comparePriority(ToDo t){
+        return priority.compareTo(t.getPriority());
+    }
+
+    public int compareState(ToDo t){
+        return state.compareTo(t.getState());
     }
 }
