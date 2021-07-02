@@ -24,10 +24,16 @@ public class ToDoList {
         return copy;
     }
 
-    // Questa funzione è chiamata quando l'utente sceglie di visualizzare i dati per priorità...
-    public void viewByPriority() {
+    //prendo i TO-DO dal repository e li trasformo in lista
+    public ArrayList<ToDo> listGetter(){
         ToDoRepository tdr = ToDoRepository.getToDoRepository();
         theList = tdr.getToDoList();
+        return theList;
+    }
+
+    // Questa funzione è chiamata quando l'utente sceglie di visualizzare i dati per priorità...
+    public void viewByPriority() {
+        listGetter();
 
         Comparator<ToDo> comparator = new Comparator<ToDo>() {
             @Override
@@ -72,11 +78,11 @@ public class ToDoList {
     }
 
     public String print(){
-        String result = "";
+        String result = "\n";
 
         for (ToDo t:
              theList) {
-            result = result + t.prettyPrint();
+            result = result + "\n" + t.prettyPrint() + "\n";
         }
 
         return result;

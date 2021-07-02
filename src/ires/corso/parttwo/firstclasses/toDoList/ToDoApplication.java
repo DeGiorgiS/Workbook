@@ -1,5 +1,7 @@
 package ires.corso.parttwo.firstclasses.toDoList;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ToDoApplication {
@@ -12,9 +14,19 @@ public class ToDoApplication {
     // 5. Fornisce anche i metodi della classe "lettore" di quiz... askForInput , display
 
     public static void main (String[] args){
-        ToDoRepository repo = null;
-        //todo se non trova il file, se lo crea
-        repo = ToDoRepository.loadFromFile("ToDoExercise.txt"); //todo da sistemare il nome del file di default
+        //todo se non trova il file, se lo crea; vedi esempio metodo init di Marcello
+        ToDoRepository repo = ToDoRepository.loadFromFile("ToDoExercise.txt");
+/*
+        //TO-DO aggiunti a mano per test classe main todo da eliminare
+        ToDo t1 = new ToDo("prova 1", "la prima prova", LocalDate.of(2021, 02, 10));
+        ToDo t2 = new ToDo("prova 2", "la seconda prova", LocalDate.of(2021, 04, 10));
+        ToDo t3 = new ToDo("prova 3", "la terza prova", LocalDate.of(2021, 01, 10));
+        ToDo t4 = new ToDo("prova 4", "la quarta prova", LocalDate.of(2021, 05, 10));
+        repo.add(t1);
+        repo.add(t2);
+        repo.add(t3);
+        repo.add(t4);*/
+
         ToDoList tdl = new ToDoList();
 
         //incipit
@@ -34,7 +46,7 @@ public class ToDoApplication {
 
             //scelta dell'azione
             switch(in.nextLine()){
-                case "1":
+                case "1":  //todo ordinamenti non funzionano; da capire perché
                     printer("1. VISUALIZZA E ORDINA PER PRIORITà");
                     printer("2. VISUALIZZA E ORDINA PER STATO");
                     printer("3. VISUALIZZA E ORDINA PER DATA");
@@ -88,7 +100,7 @@ public class ToDoApplication {
                     printer("SEI SICURO DI VOLER USCIRE? Digita il carattere \"S\" per confermare o un altro tasto per annullare");
                     String answer = in.nextLine();
                     if(answer.equalsIgnoreCase("S")){
-                        repo.writeToFile("ToDoExercise.txt"); //todo da sistemare il nome del file in output
+                        repo.writeToFile("ToDoExercise.txt");
                         quit = true;
                     }
                     break;

@@ -34,28 +34,27 @@ public class ToDoRepository implements Serializable {
 
     private static ToDoRepository _repository = null;
 
+    private ToDoRepository(){}
+
     public static ToDoRepository getToDoRepository() {
+        if(_repository == null) _repository = new ToDoRepository();
         return _repository;
     }
 
     Map<Long, ToDo> _data = new HashMap<>();
 
+    //cancellazione di un TO-DO dal repository
     public void delete(Long ID) {
         _data.remove(ID);
     }
 
-
+    //todo probabilmente riesco a farci la stessa cosa internamente ad update
     public void add(ToDo t) {
-        // si deve entrare nell'oggetto t e leggere il suo ID
-        // per poi salvarlo nella mappa correttamente (con put(ID, t))
         _data.put(t.getEntityID(), t);
     }
 
+    //aggiornamento dei TO-DO dal repository
     public void update(ToDo t) {
-        // si prende l'ID dall'oggetto t
-        // si recupera dalla mappa il TO-DO corrispondente con get(t), per controllo
-        // si sostituisce con put(ID, t)
-
         //prendo ID del To-Do inserito
         Long id = t.getEntityID();
 
@@ -87,7 +86,7 @@ public class ToDoRepository implements Serializable {
         ArrayList<ToDo> toDoAsList= new ArrayList<>();
 
         //con metodo compatto
-        _data.values().addAll(toDoAsList);
+        toDoAsList.addAll(_data.values());
 
         //con iterazione
         //todo controllo se il ciclo While funziona come dovrebbe

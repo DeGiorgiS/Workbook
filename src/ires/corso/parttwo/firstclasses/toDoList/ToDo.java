@@ -8,8 +8,8 @@ public class ToDo implements Serializable {
     protected enum Priorities {ALTA, MEDIA, BASSA};
     protected enum States {DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA};
 
-    // classe principale
-    private static Long countID; // todo IL CONTATORE STATIC NON VIENE SERIALIZZATO, DA CAPIRE COME GIRARCI ATTORNO (es. variabile non static in ToDoRepository)
+    // priorities
+    private static Long countID = 0l; // todo IL CONTATORE STATIC NON VIENE SERIALIZZATO, DA CAPIRE COME GIRARCI ATTORNO (es. variabile non static in ToDoRepository)
     private final Long ENTITY_ID;
     private String title;
     private String description;
@@ -41,20 +41,22 @@ public class ToDo implements Serializable {
         state = s;
     }
 
-    private ToDo(Long id){
-        ENTITY_ID = id;
-        title = getTitle();
-        description = getDescription();
-        DATE_OF_CREATION = getDateOfCreation();
-        dateOfExpiration = getDateOfExpiration();
-        priority = getPriority();
-        state = getState();
+    //costruttore per TEST di debug, todo da eliminare
+    public ToDo(String t, String d, LocalDate date){
+        ENTITY_ID = setID();
+        title = t;
+        description = d;
+        DATE_OF_CREATION = LocalDate.now();
+        dateOfExpiration = date;
+        priority = Priorities.ALTA;
+        state = States.DA_FARE;
     }
 
     //metodo interno per prendere il minor ID libero e poi incrementare.
     //migliorabile con un controllo sul minor ID non utilizzato (es. ID 2 libero, ma ID dal 3 al 6 usati)
     private Long setID(){
-        return countID++;
+        countID++;
+        return countID;
     }
 
     public static Long getCountID() {
@@ -109,23 +111,10 @@ public class ToDo implements Serializable {
         this.state = state;
     }
 
-    /* fabbrica una copia esatta del To-Do (compreso l'ID)
-            pensavo di creare un costruttore "volante" qui dentro che mi permettesse di riassegnare l'ID*/
+    /* fabbrica una copia esatta del To-Do (compreso l'ID)*/
     public ToDo cloneForUpdate() {
 
-        /*@Override
-        public ToDo(){
-            entityID = getEntityID();
-            title = getTitle();
-            description = getDescription();
-            dateOfCreation = getDateOfCreation();
-            dateOfExpiration = getDateOfExpiration();
-            priority = getPriority();
-            state = getState();
-        }
-         */
-        Long id = getEntityID();
-        ToDo copiedToDo = new ToDo(id); //uso un costruttore PRIVATO per ID che crea una copia, ID compreso. todo da rivedere, poco elegante
+        ToDo copiedToDo = this;
         return copiedToDo;
     }
 

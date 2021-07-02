@@ -10,8 +10,6 @@ public class ToDoManager {
     // - gestisce input utente (cioè loop di richiesta di quali campi devono essere modificati)
     // - ha al suo interno funzioni di controllo sull'input utente //todo i controlli forse?
 
-    private static Scanner in = new Scanner (System.in);
-
     public static void createNewToDo() {
         //invoco i singoli metodi che ho fatto per impostare le singole properties
         String name = choseTitle();
@@ -23,12 +21,14 @@ public class ToDoManager {
 
         //ultima conferma finale
         System.out.printf("Stai aggiungendo il seguente TO-DO \n%s", t.prettyPrint());
+        System.out.println();
         if(confirm()){
             ToDoRepository repo = ToDoRepository.getToDoRepository();
             repo.add(t);
             System.out.println("OPERAZIONE ESEGUITA!");
         }
         else System.out.println("OPERAZIONE ANNULLATA");
+        System.out.println();
     }
 
     /* Chiede quale Id si vuole modificare
@@ -37,6 +37,7 @@ public class ToDoManager {
     // Salvataggio delle modifiche tramite ToDoRepository (update...) */
     public static void updateToDo() {
         System.out.println("Qual'e' l'ID del TO-DO da modificare?");
+        Scanner in = new Scanner (System.in);
         Long id = (Long) in.nextLong();
 
         ToDoRepository repo = ToDoRepository.getToDoRepository();
@@ -81,17 +82,20 @@ public class ToDoManager {
         }
 
         //chiedo ultima conferma prima di cambiare
-        System.out.printf("Stai sostituendo il seguente TO-DO \n%s", oldToDo.prettyPrint());
-        System.out.printf("con il seguente TO-DO \n%s", t.prettyPrint());
+        System.out.printf("Stai sostituendo il seguente TO-DO \n%s \n", oldToDo.prettyPrint());
+        System.out.printf("con il seguente TO-DO \n%s\n", t.prettyPrint());
+        System.out.println();
         if(confirm()){
             repo.update(t);
             System.out.println("OPERAZIONE ESEGUITA!");
         }
         else System.out.println("OPERAZIONE ANNULLATA");
+        System.out.println();
     }
 
     public static void removeToDo() {
         System.out.println("Qual'e' l'ID del TO-DO da eliminare?");
+        Scanner in = new Scanner (System.in);
         Long id = (Long) in.nextLong();
 
         ToDoRepository repo = ToDoRepository.getToDoRepository();
@@ -104,29 +108,34 @@ public class ToDoManager {
         ToDo oldToDo = repo._data.get(id);
 
         System.out.printf("Stai eliminando il seguente TO-DO \n%s", oldToDo.prettyPrint());
+        System.out.println();
         if(confirm()){
             repo.delete(id);
             System.out.println("OPERAZIONE ESEGUITA!");
         }
         else System.out.println("OPERAZIONE ANNULLATA");
+        System.out.println();
     }
 
     //todo meglio implementare un try-catch o lascio stacktrace automatico se utente ho formato non applicabile?
     //todo vale anche per tutti i metodi .choseX() più sotto
     public static String choseTitle(){
         System.out.println("Scegli un titolo per il To-Do");
+        Scanner in = new Scanner (System.in);
         String name = in.nextLine();
         return name;
     }
 
     public static String choseDescription(){
         System.out.println("Scegli una descrizione per il To-Do");
+        Scanner in = new Scanner (System.in);
         String description = in.nextLine();
         return description;
     }
 
-    //todo qui quasi sicuramente dovrei controllare
+    //todo qui quasi sicuramente dovrei controllare che non sia data vecchia
     public static LocalDate choseDateOfExpiration(){
+        Scanner in = new Scanner (System.in);
         System.out.println("Scegli un anno di scadenza  IN CIFRE per il To-Do");
         int year = Integer.parseInt(in.nextLine());
         System.out.println("Scegli un mese di scadenza IN CIFRE per il To-Do");
@@ -139,6 +148,8 @@ public class ToDoManager {
 
     public static ToDo.Priorities chosePriority(){
         System.out.println("Scegli una priorità per il To-Do SOLAMENTE tra: ALTA, MEDIA, BASSA");
+
+        Scanner in = new Scanner (System.in);
         String priority = in.nextLine();
         ToDo.Priorities pr = null;
         if(priority.equalsIgnoreCase("alta")){
@@ -157,6 +168,7 @@ public class ToDoManager {
 
     public static ToDo.States choseState(){
         System.out.println("Scegli una priorità per il To-Do SOLAMENTE tra: DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA");
+        Scanner in = new Scanner (System.in);
         String state = in.nextLine();
         ToDo.States st = null;
         if(state.equalsIgnoreCase("DA_FARE")){
@@ -178,7 +190,10 @@ public class ToDoManager {
 
     private static boolean confirm(){
         boolean confirmation = false;
+        System.out.println();
         System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
+
+        Scanner in = new Scanner (System.in);
         String answer = in.nextLine();
         confirmation = answer.equalsIgnoreCase("S");
         return confirmation;
