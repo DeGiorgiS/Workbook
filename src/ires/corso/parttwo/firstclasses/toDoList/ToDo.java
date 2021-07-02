@@ -3,7 +3,7 @@ package ires.corso.parttwo.firstclasses.toDoList;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class ToDo implements Serializable {
+public class ToDo implements Serializable, Cloneable {
 
     protected enum Priorities {ALTA, MEDIA, BASSA};
     protected enum States {DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA};
@@ -112,9 +112,15 @@ public class ToDo implements Serializable {
     }
 
     /* fabbrica una copia esatta del To-Do (compreso l'ID)*/
-    public ToDo cloneForUpdate() {
+    public ToDo cloneForUpdate() throws CloneNotSupportedException {
 
-        ToDo copiedToDo = this;
+        ToDo copiedToDo = null;
+        try{
+            copiedToDo = (ToDo) clone();
+        }
+        catch (CloneNotSupportedException cnse){
+            System.out.println("ERRORE");
+        }
         return copiedToDo;
     }
 

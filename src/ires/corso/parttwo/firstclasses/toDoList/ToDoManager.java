@@ -12,11 +12,11 @@ public class ToDoManager {
 
     public static void createNewToDo() {
         //invoco i singoli metodi che ho fatto per impostare le singole properties
-        String name = choseTitle();
-        String description = choseDescription();
-        LocalDate expiration = choseDateOfExpiration();
-        ToDo.Priorities pr = chosePriority();
-        ToDo.States st = choseState();
+        String name = chooseTitle();
+        String description = chooseDescription();
+        LocalDate expiration = chooseDateOfExpiration();
+        ToDo.Priorities pr = choosePriority();
+        ToDo.States st = chooseState();
         ToDo t = new ToDo(name, description, expiration, pr, st);
 
         //ultima conferma finale
@@ -51,34 +51,41 @@ public class ToDoManager {
         System.out.println(oldToDo.prettyPrint());
 
         //loop di richiesta di quali dati cambiare
-        ToDo t = oldToDo.cloneForUpdate();
-        boolean confirmation = false;
+        ToDo t = null;
+        try{
+            t = oldToDo.cloneForUpdate();
+        }
+        catch (CloneNotSupportedException cnse){
+            System.out.println("ERRORE! To Do non clonabile");
+        }
+        //ToDo t = oldToDo.cloneForUpdate();
+        //boolean confirmation = false;
         String input = "";
 
 
 
         System.out.println("Vuoi cambiare il titolo?");
         if(confirm()){
-            input = choseTitle();
+            input = chooseTitle();
             t.setTitle(input);
         }
         System.out.println("Vuoi cambiare la descrizione?");
         if(confirm()){
-            input = choseDescription();
+            input = chooseDescription();
             t.setDescription(input);
         }
         System.out.println("Vuoi cambiare la data di scadenza?");
         if(confirm()){
-            LocalDate inputDate = choseDateOfExpiration();
+            LocalDate inputDate = chooseDateOfExpiration();
             t.setDateOfExpiration(inputDate);
         }
         System.out.println("Vuoi cambiare la priorità?");
         if(confirm()){
-            t.setPriority(chosePriority());
+            t.setPriority(choosePriority());
         }
         System.out.println("Vuoi cambiare lo stato?");
         if(confirm()){
-            t.setState(choseState());
+            t.setState(chooseState());
         }
 
         //chiedo ultima conferma prima di cambiare
@@ -119,14 +126,14 @@ public class ToDoManager {
 
     //todo meglio implementare un try-catch o lascio stacktrace automatico se utente ho formato non applicabile?
     //todo vale anche per tutti i metodi .choseX() più sotto
-    public static String choseTitle(){
+    public static String chooseTitle(){
         System.out.println("Scegli un titolo per il To-Do");
         Scanner in = new Scanner (System.in);
         String name = in.nextLine();
         return name;
     }
 
-    public static String choseDescription(){
+    public static String chooseDescription(){
         System.out.println("Scegli una descrizione per il To-Do");
         Scanner in = new Scanner (System.in);
         String description = in.nextLine();
@@ -134,9 +141,9 @@ public class ToDoManager {
     }
 
     //todo qui quasi sicuramente dovrei controllare che non sia data vecchia
-    public static LocalDate choseDateOfExpiration(){
+    public static LocalDate chooseDateOfExpiration(){
         Scanner in = new Scanner (System.in);
-        System.out.println("Scegli un anno di scadenza  IN CIFRE per il To-Do");
+        System.out.println("Scegli un anno di scadenza IN CIFRE per il To-Do");
         int year = Integer.parseInt(in.nextLine());
         System.out.println("Scegli un mese di scadenza IN CIFRE per il To-Do");
         int month = Integer.parseInt(in.nextLine());
@@ -146,7 +153,7 @@ public class ToDoManager {
         return expiration;
     }
 
-    public static ToDo.Priorities chosePriority(){
+    public static ToDo.Priorities choosePriority(){
         System.out.println("Scegli una priorità per il To-Do SOLAMENTE tra: ALTA, MEDIA, BASSA");
 
         Scanner in = new Scanner (System.in);
@@ -166,7 +173,7 @@ public class ToDoManager {
         return pr;
     }
 
-    public static ToDo.States choseState(){
+    public static ToDo.States chooseState(){
         System.out.println("Scegli una priorità per il To-Do SOLAMENTE tra: DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA");
         Scanner in = new Scanner (System.in);
         String state = in.nextLine();
