@@ -13,7 +13,8 @@ public class ToDoApplication {
 
     public static void main (String[] args){
         ToDoRepository repo = null;
-        repo = ToDoRepository.loadFromFile("ToDoExercise"); //todo da sistemare il nome del file di default
+        //todo se non trova il file, se lo crea
+        repo = ToDoRepository.loadFromFile("ToDoExercise.txt"); //todo da sistemare il nome del file di default
         ToDoList tdl = new ToDoList();
 
         //incipit
@@ -42,15 +43,20 @@ public class ToDoApplication {
                         case "1":
                             tdl.viewByPriority();
                             printer(tdl.print());
+                            break;
                         case "2":
-                            tdl.viewByPriority();
+                            tdl.viewByState();
                             printer(tdl.print());
+                            break;
                         case "3":
-                            tdl.viewByPriority();
+                            tdl.viewByExpiration();
                             printer(tdl.print());
+                            break;
                         default:
                             inputNotValid();
+                            break;
                     }
+                    break;
 
                 case "2":
                     printer("1. AGGIUNGI");
@@ -61,15 +67,20 @@ public class ToDoApplication {
                         case "1":
                             //metodo di creazione testuale di un TO-DO
                             ToDoManager.createNewToDo();
+                            break;
                         case "2":
                             //metodo di rimozione testuale di un TO-DO
                             ToDoManager.removeToDo();
+                            break;
                         case "3":
                             //metodo di modifica testuale di un TO-DO
                             ToDoManager.updateToDo();
+                            break;
                         default:
                             inputNotValid();
+                            break;
                     }
+                    break;
 
                 case "3": //todo da fare la classe apposita
 
@@ -77,13 +88,15 @@ public class ToDoApplication {
                     printer("SEI SICURO DI VOLER USCIRE? Digita il carattere \"S\" per confermare o un altro tasto per annullare");
                     String answer = in.nextLine();
                     if(answer.equalsIgnoreCase("S")){
-                        repo.writeToFile("nome del file"); //todo da sistemare il nome del file in output
+                        repo.writeToFile("ToDoExercise.txt"); //todo da sistemare il nome del file in output
                         quit = true;
                     }
+                    break;
 
 
                 default:
                     inputNotValid();
+                    break;
             }
         }
     }
@@ -97,7 +110,7 @@ public class ToDoApplication {
     }
 
     public static void askForInputNum(){
-        printer("Seleziona cosa fare digitando il numero corrispondente");
+        printer("Seleziona cosa fare digitando il numero corrispondente o un altro tasto per tornare al menù principale");
         System.out.print("==>");
     }
 

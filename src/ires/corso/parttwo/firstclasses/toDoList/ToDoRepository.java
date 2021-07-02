@@ -23,9 +23,11 @@ public class ToDoRepository implements Serializable {
         }
         catch(IOException e){
             System.out.println("Trovata una IOException");
+            System.out.println();
         }
         catch(ClassNotFoundException e){
             System.out.println("Trovata una ClassNotFoundException");
+            System.out.println();
         }
         return _repository;
     }
@@ -107,6 +109,7 @@ public class ToDoRepository implements Serializable {
         }
         catch(IOException e){
             System.out.println("Trovata una IOException");
+            System.out.println();
         }
     }
 }
