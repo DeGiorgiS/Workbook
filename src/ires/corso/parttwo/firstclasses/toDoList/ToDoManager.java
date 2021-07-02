@@ -58,11 +58,8 @@ public class ToDoManager {
         catch (CloneNotSupportedException cnse){
             System.out.println("ERRORE! To Do non clonabile");
         }
-        //ToDo t = oldToDo.cloneForUpdate();
-        //boolean confirmation = false;
+
         String input = "";
-
-
 
         System.out.println("Vuoi cambiare il titolo?");
         if(confirm()){
