@@ -124,7 +124,7 @@ public class ToDoManager {
         System.out.println();
     }
 
-    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente ho formato non applicabile?
+    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente dà formato non applicabile?
     //todo vale anche per tutti i metodi .choseX() più sotto
     public static String chooseTitle(){
         System.out.println("Scegli un titolo per il To-Do");
