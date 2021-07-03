@@ -9,7 +9,6 @@ public class ToDo implements Serializable, Cloneable {
     protected enum States {DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA};
 
     // priorities
-    private static Long countID = 0l; // todo IL CONTATORE STATIC NON VIENE SERIALIZZATO, DA CAPIRE COME GIRARCI ATTORNO (es. variabile non static in ToDoRepository)
     private final Long ENTITY_ID;
     private String title;
     private String description;
@@ -20,9 +19,9 @@ public class ToDo implements Serializable, Cloneable {
 
 
 
-    // ...costruttore con ID incrementale...
-    public ToDo(){
-        ENTITY_ID = setID();
+    //costruttore di default
+    public ToDo() throws Exception{
+        ENTITY_ID = ToDoRepository.getToDoRepository().getNewId();
         title = null;
         description = null;
         DATE_OF_CREATION = LocalDate.now();
@@ -31,36 +30,14 @@ public class ToDo implements Serializable, Cloneable {
         state = States.DA_FARE;
     }
 
-    public ToDo(String t, String d, LocalDate date, Priorities p, States s){
-        ENTITY_ID = setID();
+    public ToDo(String t, String d, LocalDate date, Priorities p, States s) throws Exception{
+        ENTITY_ID = ToDoRepository.getToDoRepository().getNewId();
         title = t;
         description = d;
         DATE_OF_CREATION = LocalDate.now();
         dateOfExpiration = date;
         priority = p;
         state = s;
-    }
-
-    //costruttore per TEST di debug, todo da eliminare
-    public ToDo(String t, String d, LocalDate date){
-        ENTITY_ID = setID();
-        title = t;
-        description = d;
-        DATE_OF_CREATION = LocalDate.now();
-        dateOfExpiration = date;
-        priority = Priorities.ALTA;
-        state = States.DA_FARE;
-    }
-
-    //metodo interno per prendere il minor ID libero e poi incrementare.
-    //migliorabile con un controllo sul minor ID non utilizzato (es. ID 2 libero, ma ID dal 3 al 6 usati)
-    private Long setID(){
-        countID++;
-        return countID;
-    }
-
-    public static Long getCountID() {
-        return countID;
     }
 
     public Long getEntityID() {
@@ -124,18 +101,11 @@ public class ToDo implements Serializable, Cloneable {
         return copiedToDo;
     }
 
+    //stringa più comprensibile
     public String prettyPrint(){
         String s = String.format(" ID: %d \n TITOLO: %s \n DESCRIZIONE: %s \n CREATO IL: %s \n CON SCADENZA IL: %s \n CON PRIORITà: %s \n CON STATO: %s",
                 getEntityID(), getTitle(), getDescription(), getDateOfCreation().toString(), getDateOfExpiration().toString(), getPriority().toString(),
                 getState().toString());
         return s;
-    }
-
-    public int comparePriority(ToDo t){
-        return priority.compareTo(t.getPriority());
-    }
-
-    public int compareState(ToDo t){
-        return state.compareTo(t.getState());
     }
 }

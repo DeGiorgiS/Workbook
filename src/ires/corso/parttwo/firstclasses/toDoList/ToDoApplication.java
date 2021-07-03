@@ -14,20 +14,32 @@ public class ToDoApplication {
     // 5. Fornisce anche i metodi della classe "lettore" di quiz... askForInput , display
 
     public static void main (String[] args){
-        //todo se non trova il file, se lo crea; vedi esempio metodo init di Marcello
-        ToDoRepository repo = ToDoRepository.loadFromFile("ToDoExercise.txt");
-/*
-        //TO-DO aggiunti a mano per test classe main todo da eliminare
-        ToDo t1 = new ToDo("prova 1", "la prima prova", LocalDate.of(2021, 02, 10));
-        ToDo t2 = new ToDo("prova 2", "la seconda prova", LocalDate.of(2021, 04, 10));
-        ToDo t3 = new ToDo("prova 3", "la terza prova", LocalDate.of(2021, 01, 10));
-        ToDo t4 = new ToDo("prova 4", "la quarta prova", LocalDate.of(2021, 05, 10));
-        repo.add(t1);
-        repo.add(t2);
-        repo.add(t3);
-        repo.add(t4);*/
+        //inizializzazione del repository
+        ToDoRepository.initialization("ToDoExercise.ser");
+        ToDoRepository repo = null;
+        try{
+            repo = ToDoRepository.getToDoRepository();
+        }
+        catch (Exception e) {
+            printer("COLTA ECCEZIONE NEL CARICAMENTO INIZIALE DEL REPOSITORY");
+            printer("\n");
+        }
 
-        ToDoList tdl = new ToDoList();
+        //TO-DO aggiunti a mano per test classe main todo da eliminare
+        /*try
+        {
+            ToDo t1 = new ToDo("prova 1", "la prima prova", LocalDate.of(2021, 02, 10), ToDo.Priorities.ALTA, ToDo.States.DA_FARE);
+            ToDo t2 = new ToDo("prova 2", "la seconda prova", LocalDate.of(2021, 04, 10), ToDo.Priorities.MEDIA, ToDo.States.IN_ESECUZIONE);
+            ToDo t3 = new ToDo("prova 3", "la terza prova", LocalDate.of(2021, 01, 10), ToDo.Priorities.BASSA, ToDo.States.COMPLETATA);
+            ToDo t4 = new ToDo("prova 4", "la quarta prova", LocalDate.of(2021, 05, 10), ToDo.Priorities.MEDIA, ToDo.States.ANNULLATA);
+            repo.add(t1);
+            repo.add(t2);
+            repo.add(t3);
+            repo.add(t4);
+        }
+        catch (Exception e){
+            printer("ECCEZIONE NELLA CREAZIONE DEI TODO DI TEST");
+        }*/
 
         //incipit
         printer("------------------------");
@@ -35,6 +47,7 @@ public class ToDoApplication {
         printer("------------------------");
 
         boolean quit = false;
+        ToDoList tdl = new ToDoList();
         Scanner in = new Scanner(System.in);
 
         while(!quit){
@@ -46,7 +59,7 @@ public class ToDoApplication {
 
             //scelta dell'azione
             switch(in.nextLine()){
-                case "1":  //todo ordinamenti non funzionano; da capire perché
+                case "1":
                     printer("1. VISUALIZZA E ORDINA PER PRIORITà");
                     printer("2. VISUALIZZA E ORDINA PER STATO");
                     printer("3. VISUALIZZA E ORDINA PER DATA");
@@ -78,7 +91,12 @@ public class ToDoApplication {
                     switch(in.nextLine()){ //todo forse dovrei spostare qui la parte testuale del ToDoManager???
                         case "1":
                             //metodo di creazione testuale di un TO-DO
-                            ToDoManager.createNewToDo();
+                            try{
+                                ToDoManager.createNewToDo();
+                            }
+                            catch (Exception e){
+                                printer("ECCEZIONE NELLA CREAZIONE DI UN NUOVO TO-DO");
+                            }
                             break;
                         case "2":
                             //metodo di rimozione testuale di un TO-DO
@@ -100,7 +118,7 @@ public class ToDoApplication {
                     printer("SEI SICURO DI VOLER USCIRE? Digita il carattere \"S\" per confermare o un altro tasto per annullare");
                     String answer = in.nextLine();
                     if(answer.equalsIgnoreCase("S")){
-                        repo.writeToFile("ToDoExercise.txt");
+                        repo.writeToFile();
                         quit = true;
                     }
                     break;

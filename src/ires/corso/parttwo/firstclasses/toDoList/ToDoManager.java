@@ -10,7 +10,7 @@ public class ToDoManager {
     // - gestisce input utente (cioè loop di richiesta di quali campi devono essere modificati)
     // - ha al suo interno funzioni di controllo sull'input utente //todo i controlli forse?
 
-    public static void createNewToDo() {
+    public static void createNewToDo() throws Exception{
         //invoco i singoli metodi che ho fatto per impostare le singole properties
         String name = chooseTitle();
         String description = chooseDescription();
@@ -23,7 +23,15 @@ public class ToDoManager {
         System.out.printf("Stai aggiungendo il seguente TO-DO \n%s", t.prettyPrint());
         System.out.println();
         if(confirm()){
-            ToDoRepository repo = ToDoRepository.getToDoRepository();
+            ToDoRepository repo = null;
+            try{
+                repo = ToDoRepository.getToDoRepository();
+            }
+            catch (Exception e) {
+                System.out.println("COLTA ECCEZIONE NEL CARICAMENTO INIZIALE DEL REPOSITORY");
+                System.out.println("\n");
+            }
+
             repo.add(t);
             System.out.println("OPERAZIONE ESEGUITA!");
         }
@@ -40,7 +48,14 @@ public class ToDoManager {
         Scanner in = new Scanner (System.in);
         Long id = (Long) in.nextLong();
 
-        ToDoRepository repo = ToDoRepository.getToDoRepository();
+        ToDoRepository repo = null;
+        try{
+            repo = ToDoRepository.getToDoRepository();
+        }
+        catch (Exception e) {
+            System.out.println("COLTA ECCEZIONE NEL CARICAMENTO INIZIALE DEL REPOSITORY");
+            System.out.println("\n");
+        }
         //stampa del TO-DO scelto se esiste, altrimenti di un messaggio di errore
         if(!repo._data.containsKey(id)){
             System.out.println("ERRORE: ID non presente");
@@ -102,7 +117,14 @@ public class ToDoManager {
         Scanner in = new Scanner (System.in);
         Long id = (Long) in.nextLong();
 
-        ToDoRepository repo = ToDoRepository.getToDoRepository();
+        ToDoRepository repo = null;
+        try{
+            repo = ToDoRepository.getToDoRepository();
+        }
+        catch (Exception e) {
+            System.out.println("COLTA ECCEZIONE NEL CARICAMENTO INIZIALE DEL REPOSITORY");
+            System.out.println("\n");
+        }
         //stampa del TO-DO scelto se esiste, altrimenti di un messaggio di errore
         if(!repo._data.containsKey(id)){
             System.out.println("ERRORE: ID non presente");
@@ -121,8 +143,7 @@ public class ToDoManager {
         System.out.println();
     }
 
-    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente dà formato non applicabile?
-    //todo vale anche per tutti i metodi .choseX() più sotto
+    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente dà formato non applicabile? vale anche per tutti i metodi .chooseX() più sotto
     public static String chooseTitle(){
         System.out.println("Scegli un titolo per il To-Do");
         Scanner in = new Scanner (System.in);
