@@ -112,7 +112,27 @@ public class ToDoApplication {
                     }
                     break;
 
-                case "3": //todo da fare la classe apposita
+                case "3":
+                    printer("1. IMPORTA DA FILE TESTUALE");
+                    printer("2. ESPORTA DA FILE TESTUALE");
+                    askForInputNum();
+                    switch(in.nextLine()){
+                        case "1":
+                            try{
+                                ToDoImportExport.importFromFile("ToDoImport.txt");
+                            }
+                            catch(Exception e){
+                                printer("ECCEZIONE nel input da testo di To-Do");
+                            }
+
+                        case "2":
+                            try{
+                                ToDoImportExport.exportToFile("ToDoExport.txt");
+                            }
+                            catch(Exception e){
+                                printer("ECCEZIONE nel export su testo di To-Do");
+                            }
+                    }
 
                 case"4":
                     printer("SEI SICURO DI VOLER USCIRE? Digita il carattere \"S\" per confermare o un altro tasto per annullare");

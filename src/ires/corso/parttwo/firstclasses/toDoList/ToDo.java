@@ -20,7 +20,7 @@ public class ToDo implements Serializable, Cloneable {
 
 
     //costruttore di default
-    public ToDo() throws Exception{
+    private ToDo() throws Exception{
         ENTITY_ID = ToDoRepository.getToDoRepository().getNewId();
         title = null;
         description = null;
