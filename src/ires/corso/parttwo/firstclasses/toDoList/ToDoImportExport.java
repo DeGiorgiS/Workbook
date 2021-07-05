@@ -109,12 +109,13 @@ public class ToDoImportExport {
     public static void importFromFile(String fileName) throws Exception{
         ArrayList<String> fileLines = new ArrayList<>();
 
+        //todo ATTUALMENTE AGGIUNGE I TO-DO IMPORTATI, MA FACCIO UN SELETTORE SE AGGIUNGERE O SOVRASCRIVERE
+
         //trasformo il file di input in un array con le linee = To-Do
         try(BufferedReader inputStream = new BufferedReader(new FileReader(fileName))){
             String s;
 
             while((s = inputStream.readLine()) != null){
-                //s = inputStream.readLine();
                 fileLines.add(s); //vede i caratteri nel inputStream ma s resta stringa nulla
             }
         }

@@ -70,20 +70,18 @@ public class ToDoApplication {
                     printer("X. TORNA INDIETRO");
                     askForInputNum();
                     while(!insideQuit) {
+                        tdl.listGetter(); //prendo la lista dal Repo
                         switch (in.nextLine()) {
                             case "1":
-                                tdl.viewByPriority();
-                                printer(tdl.print());
+                                printer(tdl.print(tdl.viewByPriority()));
                                 insideQuit = true;
                                 break;
                             case "2":
-                                tdl.viewByState();
-                                printer(tdl.print());
+                                printer(tdl.print(tdl.viewByState()));
                                 insideQuit = true;
                                 break;
                             case "3":
-                                tdl.viewByExpiration();
-                                printer(tdl.print());
+                                printer(tdl.print(tdl.viewByExpiration()));
                                 insideQuit = true;
                                 break;
                             case "X":

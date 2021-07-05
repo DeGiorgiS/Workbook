@@ -43,37 +43,43 @@ public class ToDoList {
     }
 
     // Questa funzione è chiamata quando l'utente sceglie di visualizzare i dati per priorità...
-    public void viewByPriority() {
+    public List<ToDo> viewByPriority() {
         Comparator<ToDo> comparator = new Comparator<ToDo>() {
             @Override
             public int compare(ToDo o1, ToDo o2) {
                 return o1.getPriority().compareTo(o2.getPriority());
             }
         };
-        Collections.sort(theList,comparator);
+        ArrayList<ToDo> priorityList = theList;
+        Collections.sort(priorityList,comparator);
+        return priorityList;
     }
 
     // lista ordinata per stato
-    public void viewByState() {
+    public List<ToDo> viewByState() {
         Comparator<ToDo> comparator = new Comparator<ToDo>() {
             @Override
             public int compare(ToDo o1, ToDo o2) {
                 return o1.getState().compareTo(o2.getState());
             }
         };
-        Collections.sort(theList,comparator);
+        ArrayList<ToDo> stateList = theList;
+        Collections.sort(stateList,comparator);
+        return stateList;
     }
 
     //funzione per ordinare per data di scadenza
-    public void viewByExpiration() {
-        Collections.sort(theList, (ToDo t1, ToDo t2) -> t1.getDateOfExpiration().compareTo(t2.getDateOfExpiration()));
+    public List<ToDo> viewByExpiration() {
+        ArrayList<ToDo> expirationList = theList;
+        Collections.sort(expirationList, (ToDo t1, ToDo t2) -> t1.getDateOfExpiration().compareTo(t2.getDateOfExpiration()));
+        return expirationList;
     }
 
-    public String print(){
+    public String print(List<ToDo> tdl){
         String result = "\n";
 
         for (ToDo t:
-             theList) {
+             tdl) {
             result = result + "\n" + t.prettyPrint() + "\n";
         }
 
