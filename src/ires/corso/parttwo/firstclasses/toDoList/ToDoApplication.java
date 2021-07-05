@@ -28,9 +28,9 @@ public class ToDoApplication {
         //TO-DO aggiunti a mano per test classe main todo da eliminare
         /*try
         {
-            ToDo t1 = new ToDo("prova 1", "la prima prova", LocalDate.of(2021, 02, 10), ToDo.Priorities.ALTA, ToDo.States.DA_FARE);
+            ToDo t1 = new ToDo("prova 1", "la prima prova", LocalDate.of(2021, 02, 10), ToDo.Priorities.ALTA, ToDo.States.COMPLETATA);
             ToDo t2 = new ToDo("prova 2", "la seconda prova", LocalDate.of(2021, 04, 10), ToDo.Priorities.MEDIA, ToDo.States.IN_ESECUZIONE);
-            ToDo t3 = new ToDo("prova 3", "la terza prova", LocalDate.of(2021, 01, 10), ToDo.Priorities.BASSA, ToDo.States.COMPLETATA);
+            ToDo t3 = new ToDo("prova 3", "la terza prova", LocalDate.of(2021, 01, 10), ToDo.Priorities.BASSA, ToDo.States.DA_FARE);
             ToDo t4 = new ToDo("prova 4", "la quarta prova", LocalDate.of(2021, 05, 10), ToDo.Priorities.MEDIA, ToDo.States.ANNULLATA);
             repo.add(t1);
             repo.add(t2);
@@ -51,90 +51,133 @@ public class ToDoApplication {
         Scanner in = new Scanner(System.in);
 
         while(!quit){
+            printer("\n");
             printer("1. VISUALIZZA");
             printer("2. AGGIUNGI, RIMUOVI, MODIFICA");
             printer("3. IMPORT/EXPORT");
-            printer("4. USCITA");
+            printer("X. USCITA");
+            printer("\n");
+            boolean insideQuit = false; //variabile usata per il loop dei sotto-menù in caso di scelta non valida
             askForInputNum();
 
             //scelta dell'azione
             switch(in.nextLine()){
                 case "1":
+                    printer("\n");
                     printer("1. VISUALIZZA E ORDINA PER PRIORITà");
                     printer("2. VISUALIZZA E ORDINA PER STATO");
                     printer("3. VISUALIZZA E ORDINA PER DATA");
+                    printer("X. TORNA INDIETRO");
                     askForInputNum();
-                    switch(in.nextLine()){
-                        case "1":
-                            tdl.viewByPriority();
-                            printer(tdl.print());
-                            break;
-                        case "2":
-                            tdl.viewByState();
-                            printer(tdl.print());
-                            break;
-                        case "3":
-                            tdl.viewByExpiration();
-                            printer(tdl.print());
-                            break;
-                        default:
-                            inputNotValid();
-                            break;
+                    while(!insideQuit) {
+                        switch (in.nextLine()) {
+                            case "1":
+                                tdl.viewByPriority();
+                                printer(tdl.print());
+                                insideQuit = true;
+                                break;
+                            case "2":
+                                tdl.viewByState();
+                                printer(tdl.print());
+                                insideQuit = true;
+                                break;
+                            case "3":
+                                tdl.viewByExpiration();
+                                printer(tdl.print());
+                                insideQuit = true;
+                                break;
+                            case "X":
+                            case "x":
+                                insideQuit = true;
+                                break;
+                            default:
+                                inputNotValid();
+                                break;
+                        }
                     }
                     break;
 
                 case "2":
+                    printer("\n");
                     printer("1. AGGIUNGI");
                     printer("2. RIMUOVI");
                     printer("3. MODIFICA");
+                    printer("X. TORNA INDIETRO");
                     askForInputNum();
-                    switch(in.nextLine()){ //todo forse dovrei spostare qui la parte testuale del ToDoManager???
-                        case "1":
-                            //metodo di creazione testuale di un TO-DO
-                            try{
-                                ToDoManager.createNewToDo();
-                            }
-                            catch (Exception e){
-                                printer("ECCEZIONE NELLA CREAZIONE DI UN NUOVO TO-DO");
-                            }
-                            break;
-                        case "2":
-                            //metodo di rimozione testuale di un TO-DO
-                            ToDoManager.removeToDo();
-                            break;
-                        case "3":
-                            //metodo di modifica testuale di un TO-DO
-                            ToDoManager.updateToDo();
-                            break;
-                        default:
-                            inputNotValid();
-                            break;
+                    while(!insideQuit) {
+                        switch (in.nextLine()) { //todo forse dovrei spostare qui la parte testuale del ToDoManager???
+                            case "1":
+                                //metodo di creazione testuale di un TO-DO
+                                try {
+                                    ToDoManager.createNewToDo();
+                                    insideQuit = true;
+                                } catch (Exception e) {
+                                    printer("ECCEZIONE NELLA CREAZIONE DI UN NUOVO TO-DO");
+                                }
+                                break;
+                            case "2":
+                                //metodo di rimozione testuale di un TO-DO
+                                ToDoManager.removeToDo();
+                                insideQuit = true;
+                                break;
+                            case "3":
+                                //metodo di modifica testuale di un TO-DO
+                                ToDoManager.updateToDo(); //todo posso impostare un controllo che se ID inesistente mi faccia riprovare l'inserimento?
+                                insideQuit = true;
+                                break;
+                            case "X":
+                            case "x":
+                                insideQuit = true;
+                                break;
+                            default:
+                                inputNotValid();
+                                break;
+                        }
                     }
                     break;
 
                 case "3":
+                    printer("\n");
                     printer("1. IMPORTA DA FILE TESTUALE");
-                    printer("2. ESPORTA DA FILE TESTUALE");
+                    printer("2. ESPORTA SU FILE TESTUALE");
+                    printer("X. TORNA INDIETRO");
                     askForInputNum();
-                    switch(in.nextLine()){
-                        case "1":
-                            try{
-                                ToDoImportExport.importFromFile("ToDoImport.txt");
-                            }
-                            catch(Exception e){
-                                printer("ECCEZIONE nel input da testo di To-Do");
-                            }
+                    while(!insideQuit) {
+                        switch (in.nextLine()) {
+                            case "1":
+                                try {
+                                    ToDoImportExport.importFromFile("ToDoImport.txt");
+                                    printer("IMPORT ESEGUITO CON SUCCESSO");
+                                } catch (Exception e) {
+                                    printer("ECCEZIONE nel import da testo di To-Do");
+                                }
+                                insideQuit = true;
+                                break;
 
-                        case "2":
-                            try{
-                                ToDoImportExport.exportToFile("ToDoExport.txt");
-                            }
-                            catch(Exception e){
-                                printer("ECCEZIONE nel export su testo di To-Do");
-                            }
+                            case "2":
+                                try {
+                                    ToDoImportExport.exportToFile("ToDoExport.txt");
+                                    printer("EXPORT ESEGUITO CON SUCCESSO");
+                                } catch (Exception e) {
+                                    printer("ECCEZIONE nel export su testo di To-Do");
+                                }
+                                insideQuit = true;
+                                break;
+                            case "X":
+                            case "x":
+                                insideQuit = true;
+                                break;
+                            default:
+                                inputNotValid();
+                                break;
+                        }
                     }
+                    break;
 
-                case"4":
+                //costruzione usata per unire i comportamenti in caso di scelta di "X" maiuscola o minuscola
+                case "X":
+
+                case "x":
                     printer("SEI SICURO DI VOLER USCIRE? Digita il carattere \"S\" per confermare o un altro tasto per annullare");
                     String answer = in.nextLine();
                     if(answer.equalsIgnoreCase("S")){
@@ -165,6 +208,6 @@ public class ToDoApplication {
     }
 
     public static void inputNotValid(){
-        printer("Non ho capito la tua richiesta. Torno al menù principale");
+        printer("Non ho capito la tua richiesta. Riprova.");
     }
 }

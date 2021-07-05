@@ -3,14 +3,16 @@ package ires.corso.parttwo.firstclasses.toDoList;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 public class ToDoImportExport {
     // Gestisce import/export da file
     // Mantiene i formati di import e di export (conversione da/verso stringa)
 
     private static String toStringConverter(ToDo t){
-        String result = String.format("%s|%s|%s|%s|%s|%s|%s", t.getEntityID().toString(), t.getTitle(), t, t.getDescription(),
+        String result = String.format("%s|%s|%s|%s|%s|%s|%s", t.getEntityID().toString(), t.getTitle(), t.getDescription(),
                 t.getDateOfCreation().toString(), t.getDateOfExpiration().toString(), t.getPriority().toString(),
                 t.getState().toString());
         return result;
@@ -103,6 +105,7 @@ public class ToDoImportExport {
     //prende in input un file da cui caricare una lista di To-Do
     //ipotesi: 1. formato in input rispetta quello del exportToFile; 2. l'ID viene ri-settato in fase di import dal Repo e anche la data di creazione
     //problemi: 1. formato non rispettato; 2. carattere di separazione usato nelle properties del To-Do
+    //todo cerco se c'è un modo di trasformare format della serializzazione in stringa "leggibile dall'uomo"
     public static void importFromFile(String fileName) throws Exception{
         ArrayList<String> fileLines = new ArrayList<>();
 
@@ -110,9 +113,9 @@ public class ToDoImportExport {
         try(BufferedReader inputStream = new BufferedReader(new FileReader(fileName))){
             String s;
 
-            while(inputStream.readLine() != null){
-                s = inputStream.readLine();
-                fileLines.add(s);
+            while((s = inputStream.readLine()) != null){
+                //s = inputStream.readLine();
+                fileLines.add(s); //vede i caratteri nel inputStream ma s resta stringa nulla
             }
         }
         catch (IOException ioe){
@@ -120,16 +123,18 @@ public class ToDoImportExport {
         }
 
         //itero sulla lista di linee, trasformandole in oggetti To-Do
-        Iterator<String> itrLines = fileLines.iterator();
+        Iterator<String> itrLines = fileLines.iterator(); //fileLines ha la riga prevista dal file in input
         int numImportedToDo = 0;
         while(itrLines.hasNext()){
-            String[] splitter = itrLines.next().split("\\|");
+            String line = itrLines.next();
+            String[] splitter = line.split("\\|");
 
             ToDo td = toToDoConverter(splitter);
 
             ToDoRepository.getToDoRepository().add(td);
             numImportedToDo++;
         }
-        System.out.printf("Sono stati importati %d nuovi TO-DO", numImportedToDo);
+
+        System.out.printf("Sono stati importati %d nuovi TO-DO\n", numImportedToDo);
     }
 }

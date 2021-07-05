@@ -84,14 +84,14 @@ public class ToDoRepository implements Serializable {
     public long getNewId() {
         _idSeed++;
         return _idSeed;
-    }
+    } //todo evolvere in modo da riutilizzare ID lasciati vuoti da cancellazioni
 
     //cancellazione di un TO-DO dal repository
     public void delete(Long ID) {
         _data.remove(ID);
     }
 
-    //todo probabilmente riesco a farci la stessa cosa internamente ad update
+
     public void add(ToDo t) {
         _data.put(t.getEntityID(), t);
     }
@@ -101,30 +101,13 @@ public class ToDoRepository implements Serializable {
         //prendo ID del To-Do inserito
         Long id = t.getEntityID();
 
-        //controllo esista già un to-do con quel ID
-        boolean alreadyTakenID = false;
-        for (Long ids:
-             _data.keySet()) {
-            if(id.equals(ids)){
-                alreadyTakenID = true;
-                break;
-            }
+        //controllo esista già un to-do con quel ID, in caso lo aggiorno, se no messaggio di errore
+        if (_data.containsKey(id)){
+            add(t); //potrei usare .put() qui e cancellare il metodo .add di questa classe, ma così posso cambiare in futuro la modalità di aggiunta dei ToDo
         }
-
-        //eseguo l'update
-        if(alreadyTakenID) _data.remove(id);
-        _data.put(id, t);
+        else
+            System.out.println("ID DA AGGIORNARE NON PRESENTE NEL REPOSITORY");
     }
-/*
-    //booleano che controlla se il TO-DO dato in argomento esista, da implementare un metodo di uguaglianza in classe TO-DO
-    public boolean existence(ToDo t){
-        boolean itExists = false;
-        for (ToDo v:
-                _data.values()) {
-            if(v.equals(t)){itExists = true;}
-        }
-        return itExists;
-    }*/
 
     //restituisce un ArrayList con i TO-DO
     public ArrayList<ToDo> getToDoList() {

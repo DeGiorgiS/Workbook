@@ -8,7 +8,7 @@ public class ToDoManager {
     // - metodi per creazione nuovo TO-DO
     // - metodi per la modifica, la rimozione
     // - gestisce input utente (cioè loop di richiesta di quali campi devono essere modificati)
-    // - ha al suo interno funzioni di controllo sull'input utente //todo i controlli forse?
+    // - ha al suo interno funzioni di controllo sull'input utente
 
     public static void createNewToDo() throws Exception{
         //invoco i singoli metodi che ho fatto per impostare le singole properties
@@ -76,31 +76,31 @@ public class ToDoManager {
 
         String input = "";
 
-        System.out.println("Vuoi cambiare il titolo?");
+        System.out.println("CAMBIO DEL TITOLO");
         if(confirm()){
             input = chooseTitle();
             t.setTitle(input);
         }
-        System.out.println("Vuoi cambiare la descrizione?");
+        System.out.println("CAMBIO DELLA DESCRIZIONE");
         if(confirm()){
             input = chooseDescription();
             t.setDescription(input);
         }
-        System.out.println("Vuoi cambiare la data di scadenza?");
+        System.out.println("CAMBIO DELLA DATA DI SCADENZA");
         if(confirm()){
             LocalDate inputDate = chooseDateOfExpiration();
             t.setDateOfExpiration(inputDate);
         }
-        System.out.println("Vuoi cambiare la priorità?");
+        System.out.println("CAMBIO DELLA PRIORITà");
         if(confirm()){
             t.setPriority(choosePriority());
         }
-        System.out.println("Vuoi cambiare lo stato?");
+        System.out.println("CAMBIO DELLO STATO");
         if(confirm()){
             t.setState(chooseState());
         }
 
-        //chiedo ultima conferma prima di cambiare
+        //chiedo ultima conferma prima di cambiare //todo creo un metodo .equals che confronta le properties e chiede questa conferma solo se sono diversi
         System.out.printf("Stai sostituendo il seguente TO-DO \n%s \n", oldToDo.prettyPrint());
         System.out.printf("con il seguente TO-DO \n%s\n", t.prettyPrint());
         System.out.println();
@@ -143,7 +143,6 @@ public class ToDoManager {
         System.out.println();
     }
 
-    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente dà formato non applicabile? vale anche per tutti i metodi .chooseX() più sotto
     public static String chooseTitle(){
         System.out.println("Scegli un titolo per il To-Do");
         Scanner in = new Scanner (System.in);
@@ -158,19 +157,31 @@ public class ToDoManager {
         return description;
     }
 
-    //todo qui quasi sicuramente dovrei controllare che non sia data vecchia
+    //todo meglio implementare un try-catch o lascio stacktrace automatico se utente dà formato non applicabile?
     public static LocalDate chooseDateOfExpiration(){
-        Scanner in = new Scanner (System.in);
-        System.out.println("Scegli un anno di scadenza IN CIFRE per il To-Do");
-        int year = Integer.parseInt(in.nextLine());
-        System.out.println("Scegli un mese di scadenza IN CIFRE per il To-Do");
-        int month = Integer.parseInt(in.nextLine());
-        System.out.println("Scegli un giorno di scadenza IN CIFRE per il To-Do");
-        int day = Integer.parseInt(in.nextLine());
-        LocalDate expiration = LocalDate.of(year, month, day);
+        boolean validDate = false;
+        LocalDate expiration = null;
+
+        while(!validDate){
+            Scanner in = new Scanner (System.in);
+            System.out.println("Scegli un anno di scadenza IN CIFRE per il To-Do");
+            int year = Integer.parseInt(in.nextLine());
+            System.out.println("Scegli un mese di scadenza IN CIFRE per il To-Do");
+            int month = Integer.parseInt(in.nextLine());
+            System.out.println("Scegli un giorno di scadenza IN CIFRE per il To-Do");
+            int day = Integer.parseInt(in.nextLine());
+            if(LocalDate.of(year, month, day).isAfter(LocalDate.now())){
+                expiration = LocalDate.of(year, month, day);
+                validDate = true;
+            }
+            else
+                System.out.println("DATA INSERITA è GIà PASSATA, REINSERISCI UNA DATA VALIDA SEGUENDO LE ISTRUZIONI");
+
+        }
         return expiration;
     }
 
+    //se la scelta non è nel enum, inserisco un default
     public static ToDo.Priorities choosePriority(){
         System.out.println("Scegli una priorità per il To-Do SOLAMENTE tra: ALTA, MEDIA, BASSA");
 
@@ -191,6 +202,7 @@ public class ToDoManager {
         return pr;
     }
 
+    //se la scelta non è nel enum, inserisco un default
     public static ToDo.States chooseState(){
         System.out.println("Scegli una priorità per il To-Do SOLAMENTE tra: DA_FARE, IN_ESECUZIONE, COMPLETATA, ANNULLATA");
         Scanner in = new Scanner (System.in);
@@ -215,8 +227,8 @@ public class ToDoManager {
 
     private static boolean confirm(){
         boolean confirmation = false;
-        System.out.println();
-        System.out.println("Sei sicuro? Digita il carattere S per confermare o altro per annullare");
+        //System.out.println();
+        System.out.println("Vuoi procedere? Digita il carattere S per confermare o altro per annullare");
 
         Scanner in = new Scanner (System.in);
         String answer = in.nextLine();
