@@ -16,4 +16,10 @@ public class Truck extends Vehicle{
     public void setCargoSpace(Double cargoSpace) {
         this.cargoSpace = cargoSpace;
     }
+
+    @Override
+    public String prettyPrint(){
+        String result = super.prettyPrint() + String.format(" e %f kg di capacità di carico \n", this.getCargoSpace());
+        return result;
+    }
 }

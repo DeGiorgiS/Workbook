@@ -16,4 +16,8 @@ public class Vehicle implements Serializable {
     public void setPlate(String licencePlate) {
         this.licencePlate = licencePlate;
     }
+
+    public String prettyPrint(){
+        return String.format("Sono un %s con targa %s\n", this.getClass(), this.getPlate());
+    }
 }

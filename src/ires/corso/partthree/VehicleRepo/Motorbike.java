@@ -16,4 +16,16 @@ public class Motorbike extends Vehicle{
     public void setStreetLegal(boolean streetLegal) {
         isStreetLegal = streetLegal;
     }
+
+    @Override
+    public String prettyPrint(){
+        String result;
+        if(isStreetLegal){
+            result = super.prettyPrint() + String.format(" e posso essere guidata in strada \n");
+        }
+        else
+            result = super.prettyPrint() + String.format(" e non posso essere guidata in strada \n");
+
+        return result;
+    }
 }

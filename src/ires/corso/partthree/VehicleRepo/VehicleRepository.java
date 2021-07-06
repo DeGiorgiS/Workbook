@@ -12,6 +12,12 @@ public class VehicleRepository implements Serializable {
     private static boolean _init = false; //flag se ho già inizializzato il file dove serializzare o meno
     private static String _fileName; //nome del file per la serializzazione
 
+    //CARATTERISTICA DI RESTITUIRE UNA LISTA DI VEICOLI PER "SOTTO-CLASSE"
+    private Map<String, Vehicle> vehicleMap= new HashMap<>();  //MAP con K:targa V:oggetto Vehicle
+
+    //variabile interna che assegna le targhe
+    private String seedLicencePlates; //todo imposto un modo per settare la targa al momento dell'aggiunta del veicolo
+
     //costruttore privato per obbligare ad avere una sola istanza del repository possibile
     private VehicleRepository(){}
 
@@ -40,9 +46,6 @@ public class VehicleRepository implements Serializable {
         return _repository;
     }
 
-    //CARATTERISTICA DI RESTITUIRE UNA LISTA DI VEICOLI PER "SOTTO-CLASSE"
-    private Map<String, Vehicle> vehicleMap= new HashMap<>();  //MAP con K:targa V:oggetto Vehicle
-
     //riempie la lista di elementi messi "a mano"
     public void vehicleListSetter(){
         Car c1 = new Car("AB123CD", 4);
@@ -59,40 +62,6 @@ public class VehicleRepository implements Serializable {
         vehicleMap.put(b3.getPlate(), b3);
     }
 
-    //filtro la lista per cosa sia una Car, faccio il cast alla classe Car e poi la aggiungo alla lista (fatto con lambda)
-    public List<Car> getCarList(){
-        List<Car> carList = new ArrayList<>();
-
-        vehicleMap.values().stream().filter(v -> v instanceof Car).map(i -> (Car) i).forEach(c -> carList.add(c));
-
-        return carList;
-    }
-
-    //filtro la lista per cosa sia un Truck, faccio il cast alla classe Truck e poi la aggiungo alla lista (fatto con ciclo for)
-    public List<Truck> getTruckList(){
-        List<Truck> truckList = new ArrayList<>();
-
-        for (Vehicle v:
-             vehicleMap.values()) {
-            if(v instanceof Truck){
-                truckList.add((Truck) v);
-            }
-        }
-
-        return truckList;
-    }
-
-    //filtro la lista per cosa sia una Motorbike, faccio il cast alla classe Motorbike e poi la aggiungo alla lista (fatto con lambda)
-    public List<Motorbike> getMotorbikeList(){
-        List<Motorbike> motorbikeList = new ArrayList<>();
-
-        vehicleMap.values().stream().filter(v -> v instanceof Motorbike).map(i -> (Motorbike) i)
-                .forEach(c -> motorbikeList.add(c));
-
-        return motorbikeList;
-    }
-
-    //creo una List dai valori della mappa "completa"
     public List<Vehicle> getVehicleList(){
         List<Vehicle> vehicleList = new ArrayList<>();
         vehicleList.addAll(vehicleMap.values());
@@ -118,6 +87,15 @@ public class VehicleRepository implements Serializable {
             System.out.println("LE TARGHE NON COMBACIANO!! Swap non possibile.");
     }
 
+    //metodo per controllare se la targa esista
+    public boolean exists(String licencePlate){
+        return vehicleMap.containsKey(licencePlate);
+    }
+
+    public Vehicle getVehicle(String licencePlate){
+        return vehicleMap.get(licencePlate);
+    }
+
     //serializzazione
     public void outputToFile(){
         try(FileOutputStream file = new FileOutputStream(_fileName);
@@ -135,6 +113,7 @@ public class VehicleRepository implements Serializable {
         try(FileInputStream file = new FileInputStream(_fileName);
         ObjectInputStream in = new ObjectInputStream(file)){
             _repository = (VehicleRepository) in.readObject();
+            System.out.println("Il repo è stato deserializzato");
         }
         catch (IOException ioe){
             System.out.println("IOException in deserializzazione");

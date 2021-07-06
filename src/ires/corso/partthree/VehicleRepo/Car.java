@@ -16,4 +16,10 @@ public class Car extends Vehicle{
     public void setSeats(Integer seats) {
         this.seats = seats;
     }
+
+    @Override
+    public String prettyPrint(){
+        String result = super.prettyPrint() + String.format(" e %d posti a sedere \n", this.getSeats());
+        return result;
+    }
 }

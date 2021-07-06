@@ -1,24 +1,32 @@
 package ires.corso.partthree.VehicleRepo;
 
+import ires.corso.partthree.VehicleRepo.Menu.MenuBranch;
+import ires.corso.partthree.VehicleRepo.Menu.MenuLeaf;
+
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class VehicleRepoTester {
 
     public static void main(String[] args){
-        //inizializzo e lo salvo istanzio nel main
+        //inizializzo e lo salvo istanzio nel main con deserializzazione se possibile
         VehicleRepository.initialization("VehicleRepo.ser");
         VehicleRepository repo = null;
         try {
             repo = VehicleRepository.getRepo();
         }
         catch(Exception ex){
-            System.out.println("Eccezione nel RECUPERO del repo");
+            printer("Eccezione nel RECUPERO del repo");
         }
 
         if (repo != null) {
             //mio metodo di test che riempie la lista con elementi preimpostati
-            repo.vehicleListSetter();
+            //repo.vehicleListSetter();
 
+            MenuBranch menu = menuBuilder();
+            menu.select();
+
+            /*
             //test metodi di lista per sotto-classe
             System.out.println(repo.getCarList().toString());
             System.out.println(repo.getTruckList().toString());
@@ -30,10 +38,13 @@ public class VehicleRepoTester {
             //test aggiunta veicolo da console
             vehicleBuilder(repo);
 
-            //todo ancora da mettere -> test per REMOVE, UPDATE, SERIALIZZAZIONE
+            //todo ancora da mettere -> test per REMOVE, UPDATE*/
+
+            //serializzazione
+            repo.outputToFile();
         }
         else
-            System.out.println("IL REPO HA PUNTATORE NULLO, CONTROLLA PERCHé!");
+            printer("IL REPO HA PUNTATORE NULLO, CONTROLLA PERCHé!");
     }
 
     public static void vehicleBuilder(VehicleRepository repo){
@@ -74,5 +85,34 @@ public class VehicleRepoTester {
         } else{
             System.out.println("RICHIESTA NON VALIDA, non ho costruito nulla");
         }
+    }
+
+    public static MenuBranch menuBuilder(){
+        //visualizzazione delle liste per tipo
+        MenuLeaf carFilter = new MenuLeaf("1", "Visualizza solamente le automobili",
+                VehicleList::printCarList);
+        MenuLeaf truckFilter = new MenuLeaf("2", "Visualizza solamente i camion",
+                VehicleList::printTruckList);
+        MenuLeaf motorbikeFilter = new MenuLeaf("3", "Visualizza solamente le moto",
+                VehicleList::printMotorbikeList);
+        MenuLeaf vehicleFilter = new MenuLeaf("4", "Visualizza tutti i veicoli", VehicleList::printVehicleList);
+        MenuBranch listMenu = new MenuBranch("1", "Visualizza per tipo",
+                Arrays.asList(carFilter, truckFilter, motorbikeFilter, vehicleFilter));
+
+        //uso di metodi aggiunri, rimuovi, modifica
+        MenuLeaf adding = new MenuLeaf("1", "Aggiungi", VehicleManager::removeVehicle); //todo da cambiare con metodo corretto
+        MenuLeaf removing = new MenuLeaf("2", "Rimuovi", VehicleManager::removeVehicle);
+        MenuLeaf updating = new MenuLeaf("3", "Aggiorna", VehicleManager::removeVehicle); //todo da cambiare con metodo corretto
+        MenuBranch manipulationMenu = new MenuBranch("2", "Aggiungi, rimuovi, modifica",
+                Arrays.asList(adding, removing, updating));
+
+        MenuBranch mainMenu = new MenuBranch("0", "Main Menu", Arrays.asList(listMenu, manipulationMenu));
+        //MenuLeaf exit = menuBuilder().exitItem();
+
+        return mainMenu;
+    }
+
+    public static void printer(String s){
+        System.out.print(s);
     }
 }
